@@ -1,0 +1,1014 @@
+#ifdef __cplusplus
+    #include <cstdlib>
+#else
+    #include <stdlib.h>
+#endif
+
+#include "SDL.h"
+
+#ifdef WIN32
+	#define WIN32_LEAN_AND_MEAN
+	#include <windows.h>
+#endif
+
+#if defined(__APPLE__) && defined(__MACH__)
+	#include <OpenGL/gl.h>
+	#include <OpenGL/glu.h>
+#elif (linux)
+	#include <gl.h>
+	#include <glu.h>
+	//#include <glx.h>
+	//#include <GL/gl.h>
+	//#include <GL/glu.h>
+	//#include <GL/glx.h>
+#else
+	#include <gl/GL.h>
+	#include <gl/GLU.h>
+#endif
+
+#include <vector>
+#include <string>
+#include <math.h>
+
+#include <iostream>
+
+#include <nvsg/nvsg.h>
+#include <nvrt/RTInit.h>
+
+#include "SceneFunctions.h"
+#include "SimpleScene.h"
+#include <nvsg/Scene.h>
+#include <nvsg/ViewState.h>
+
+#include <nvgl/SceneRendererGL2.h>
+#include <nvrt/SceneRendererRTBuiltinGL.h>
+
+#include "ui/TrackballCameraManipulatorHIDSync.h"
+
+#include "nvtraverser/CombineTraverser.h"
+#include "nvtraverser/EliminateTraverser.h"
+#include "nvtraverser/UnifyTraverser.h"
+
+#include <nvutil/DbgNew.h>  // enable leak detection
+
+using namespace nvsg;
+using namespace nvgl;
+using namespace nvui;
+using namespace nvrt;
+using namespace nvutil;
+using namespace nvtraverser;
+
+nvgl::SmartRenderTargetGL   rtgl;   // RenderTarget for SceneRenderer
+nvgl::SmartSceneRendererGL2 srgl2;  // OpenGL2 based renderer
+
+/*
+#include <GL/freeglut.h>
+#include <nvsg/nvsg.h>
+#include <nvgl/SceneRendererGL2.h>
+#include <nvgl/RenderTargetGLFB.h>
+
+#include "SceneFunctions.h"
+#include "SimpleScene.h"
+
+nvgl::SmartRenderTargetGL   rtgl;   // RenderTarget for SceneRenderer
+nvgl::SmartSceneRendererGL2 srgl2;  // OpenGL2 based renderer
+
+
+// NOTE: this sample program is described in-depth in the documentation,
+// in the "Getting Started" part of the SceniX Programming Guide.
+
+
+// the sample's display function, called when the window needs to be redisplayed
+void display()
+{
+  // render the scene
+  srgl2->render();
+
+  // tell GLUT to display the new rendered image
+  glutSwapBuffers();
+}
+
+// the sample's reshape function, called when the window is reshaped
+void reshape( GLint width, GLint height )
+{
+  // pass the new window size to the render target
+  rtgl->setSize( width, height );
+}
+
+// the sample's main function
+// generate a scene, set up the renderer and enter the GLUT main loop
+int sampleMain()
+{
+  // create a SimpleScene object, containing a SceniX scene
+  SimpleScene scene;
+
+  // create a ViewState object, containing view specific state like a camera and a scene
+  nvsg::ViewStateSharedPtr viewState = nvsg::ViewState::create();
+
+  // pass the scene contained in the SimpleScene object to the ViewState object
+  nvsg::ViewStateWriteLock(viewState)->setScene( scene.m_sceneHandle );
+
+  // setup the view state with some default values, e.g. create a camera looking at the scene
+  setupDefaultViewState(viewState);
+  
+  // create a render context
+  nvgl::SmartRenderContextGL renderContextGL = nvgl::RenderContextGL::create( nvgl::RenderContextGL::Attach() );
+
+  // create a render target in the render context
+  rtgl = nvgl::RenderTargetGLFB::create ( renderContextGL ); 
+
+  // configure the render target to clear the color and depth buffer
+  rtgl->setClearMask( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+  // create a SceneRenderer for OpenGL
+  srgl2 = nvgl::SceneRendererGL2::create();
+
+  // pass it the render target and the view state
+  srgl2->setRenderTarget( rtgl );
+  srgl2->setViewState( viewState );
+
+  // configure GLUT to call the display() and reshape() functions on the appropriate events
+  glutDisplayFunc( &display );
+  glutReshapeFunc( &reshape );
+
+  // enter the GLUT main loop, start event processing
+  glutMainLoop();
+
+  // reset the scene renderer and the target
+  rtgl.reset();
+  srgl2.reset();
+
+  // finish the sample's main function
+  return 0;
+}
+
+// the main function
+// initialize SceniX and GLUT, create a window and start the sample
+int main( int argc, char *argv[] )
+{
+  // initialize SceniX
+  nvsg::nvsgInitialize();
+
+  // initialize GLUT, set window size and display mode, create the main window
+  glutInit( &argc, argv );
+  glutSetOption( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION );
+  glutInitWindowSize( 640, 480 );
+  glutInitDisplayMode( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA );
+  glutCreateWindow( "SceniX minimal GLUT example" );
+
+  // call the sample's main function
+  int result = sampleMain();
+
+  // terminate SceniX
+  nvsg::nvsgTerminate();
+
+  // return the result returned by the sample function
+  return result;
+}*/
+
+const GLsizei windowWidth = 1000;
+const GLsizei windowHeight = 950;
+
+bool leftMouseButtonPressed = false;
+bool middleMouseButtonPressed = false;
+bool rightMouseButtonPressed = false;
+
+const Uint8 leftMouseButton = 1;
+const Uint8 middleMouseButton = 2;
+const Uint8 rightMouseButton = 4;
+
+Uint8 mouseAbsState = NULL;
+Uint8 mouseRelState = NULL;
+
+int mouseAbsX = 0;
+int mouseAbsY = 0;
+int mouseRelX = 0;
+int mouseRelY = 0;
+
+const float rotateX_speed = 0.5f;
+const float rotateY_speed = 0.5f;
+const float zoomSpeed = 0.1f;
+
+GLfloat rotateX = 45.0f;
+GLfloat rotateY = 45.0f;
+GLfloat zoom = -5.0f;
+
+Uint8 *keyState = NULL;
+SDLMod keyMod;
+int keyDelay = 1;
+int keyRepeat = 10;
+std::vector<SDL_Joystick*> Joystick;
+int numJoysticks = 0;
+
+struct JoyBall
+{
+    int x;
+    int y;
+};
+
+struct JoyControl
+{
+    std::string Name;
+    int NumAxes;
+    int NumButtons;
+    int NumHats;
+    int NumBalls;
+
+    std::vector<Sint16> Axis;
+    std::vector<Uint8> Button;
+    std::vector<Uint8> Hat;
+    std::vector<JoyBall> Ball;
+};
+
+std::vector<JoyControl> Joysticks;
+
+void establishProjectionMatrix(GLsizei width, GLsizei height)
+{
+	glViewport(0,0,width,height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45.0f, (GLfloat)width/(GLfloat)height, 0.1f, 200.0f);
+}
+
+void initGL(GLsizei width, GLsizei height)
+{
+	establishProjectionMatrix(width, height);
+
+	glShadeModel(GL_SMOOTH);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	glEnable(GL_PERSPECTIVE_CORRECTION_HINT);
+}
+
+void drawCube(void)
+{
+	glBegin(GL_QUADS);
+		// Top Face
+		glColor3f(1.0f, 0.5f, 0.0f);
+		glNormal3f(0,1,0);
+		glTexCoord2f(1.0f,1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f,1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f,0.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(1.0f,0.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+		// Bottom Face
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glNormal3f(0,-1,0);
+		glTexCoord2f(1.0f,1.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f,1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f,0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(1.0f,0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+		// Front Face
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glNormal3f(0,0,1);
+		glTexCoord2f(1.0f,1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.0f,1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.0f,0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		glTexCoord2f(1.0f,0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+		// Back Face
+		glColor3f(1.0f, 0.0f, 0.5f);
+		glNormal3f(0,0,-1);
+		glTexCoord2f(1.0f,1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f,1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f,0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f,0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+		// Left Face
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glNormal3f(1,0,0);
+		glTexCoord2f(1.0f,1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.0f,1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f,0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f,0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+		// Right Face
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glNormal3f(-1,0,0);
+		glTexCoord2f(1.0f,1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+		glTexCoord2f(0.0f,1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+		glTexCoord2f(0.0f,0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f,0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+	glEnd();
+}
+
+void drawScene(void)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glTranslatef(0.0f,0.0f,zoom);
+	glRotatef(rotateX, 1, 0, 0);
+	glRotatef(rotateY, 0, 1, 0);
+
+    drawCube();
+	glFlush();
+	// this line is modified depending on which window manager is used...
+	SDL_GL_SwapBuffers();
+
+}
+
+void Keyboard(void)
+{
+    keyState = SDL_GetKeyState(NULL);
+    SDL_EnableKeyRepeat(keyDelay, keyRepeat);
+
+    //int resultUnicode = SDL_EnableUNICODE(1); // 1 Enables Unicode
+    //int resultUnicode = SDL_EnableUNICODE(0); // 0 Disables Unicode
+    //int resultUnicode = SDL_EnableUNICODE(-1); // -1 Does Not Enable of Disable Unicode
+
+    if(keyState[SDLK_LEFT])
+        rotateY -= rotateY_speed;
+
+    if(keyState[SDLK_RIGHT])
+        rotateY += rotateY_speed;
+
+    if(keyState[SDLK_UP])
+        rotateX -= rotateX_speed;
+
+    if(keyState[SDLK_DOWN])
+        rotateX += rotateX_speed;
+
+    if(keyState[SDLK_a])
+        fprintf(stdout,"Key a \n");
+
+    if(keyState[SDLK_b])
+        fprintf(stdout,"Key b \n");
+
+    if(keyState[SDLK_c])
+        fprintf(stdout,"Key c \n");
+
+    if(keyState[SDLK_d])
+        fprintf(stdout,"Key d \n");
+
+    if(keyState[SDLK_e])
+        fprintf(stdout,"Key e \n");
+
+    if(keyState[SDLK_f])
+        fprintf(stdout,"Key f \n");
+
+    if(keyState[SDLK_g])
+        fprintf(stdout,"Key g \n");
+
+    if(keyState[SDLK_h])
+        fprintf(stdout,"Key h \n");
+
+    if(keyState[SDLK_i])
+        fprintf(stdout,"Key i \n");
+
+    if(keyState[SDLK_j])
+        fprintf(stdout,"Key j \n");
+
+    if(keyState[SDLK_k])
+        fprintf(stdout,"Key k \n");
+
+    if(keyState[SDLK_l])
+        fprintf(stdout,"Key l \n");
+
+    if(keyState[SDLK_m])
+        fprintf(stdout,"Key m \n");
+
+    if(keyState[SDLK_n])
+        fprintf(stdout,"Key n \n");
+
+    if(keyState[SDLK_o])
+        fprintf(stdout,"Key o \n");
+
+    if(keyState[SDLK_p])
+        fprintf(stdout,"Key p \n");
+
+    if(keyState[SDLK_q])
+        fprintf(stdout,"Key q \n");
+
+    if(keyState[SDLK_r])
+        fprintf(stdout,"Key r \n");
+
+    if(keyState[SDLK_s])
+        fprintf(stdout,"Key s \n");
+
+    if(keyState[SDLK_t])
+        fprintf(stdout,"Key t \n");
+
+    if(keyState[SDLK_u])
+        fprintf(stdout,"Key u \n");
+
+    if(keyState[SDLK_v])
+        fprintf(stdout,"Key v \n");
+
+    if(keyState[SDLK_w])
+        fprintf(stdout,"Key w \n");
+
+    if(keyState[SDLK_x])
+        fprintf(stdout,"Key x \n");
+
+    if(keyState[SDLK_y])
+        fprintf(stdout,"Key y \n");
+
+    if(keyState[SDLK_z])
+        fprintf(stdout,"Key z \n");
+
+    if(keyState[SDLK_F1])
+        fprintf(stdout,"Key F1 \n");
+
+    if(keyState[SDLK_F2])
+        fprintf(stdout,"Key F2 \n");
+
+    if(keyState[SDLK_F3])
+        fprintf(stdout,"Key F3 \n");
+
+    if(keyState[SDLK_F4])
+        fprintf(stdout,"Key F4 \n");
+
+    if(keyState[SDLK_F5])
+        fprintf(stdout,"Key F5 \n");
+
+    if(keyState[SDLK_F6])
+        fprintf(stdout,"Key F6 \n");
+
+    if(keyState[SDLK_F7])
+        fprintf(stdout,"Key F7 \n");
+
+    if(keyState[SDLK_F8])
+        fprintf(stdout,"Key F8 \n");
+
+    if(keyState[SDLK_F9])
+        fprintf(stdout,"Key F9 \n");
+
+    if(keyState[SDLK_F10])
+        fprintf(stdout,"Key F10 \n");
+
+    if(keyState[SDLK_F11])
+        fprintf(stdout,"Key F11 \n");
+
+    if(keyState[SDLK_F12])
+        fprintf(stdout,"Key F12 \n");
+
+    if(keyState[SDLK_F13])
+        fprintf(stdout,"Key F13 \n");
+
+    if(keyState[SDLK_F14])
+        fprintf(stdout,"Key F14 \n");
+
+    if(keyState[SDLK_F15])
+        fprintf(stdout,"Key F15 \n");
+
+    if(keyState[SDLK_KP0])
+        fprintf(stdout,"Key Pad 0 \n");
+
+    if(keyState[SDLK_KP1])
+        fprintf(stdout,"Key Pad 1 \n");
+
+    if(keyState[SDLK_KP2])
+        fprintf(stdout,"Key Pad 2 \n");
+
+    if(keyState[SDLK_KP3])
+        fprintf(stdout,"Key Pad 3 \n");
+
+    if(keyState[SDLK_KP4])
+        fprintf(stdout,"Key Pad 4 \n");
+
+    if(keyState[SDLK_KP5])
+        fprintf(stdout,"Key Pad 5 \n");
+
+    if(keyState[SDLK_KP6])
+        fprintf(stdout,"Key Pad 6 \n");
+
+    if(keyState[SDLK_KP7])
+        fprintf(stdout,"Key Pad 7 \n");
+
+    if(keyState[SDLK_KP8])
+        fprintf(stdout,"Key Pad 8 \n");
+
+    if(keyState[SDLK_KP9])
+        fprintf(stdout,"Key Pad 9 \n");
+
+    if(keyState[SDLK_BACKSPACE])
+        fprintf(stdout,"Key Backspace \n");
+
+    if(keyState[SDLK_TAB])
+        fprintf(stdout,"Key Tab \n");
+
+    if(keyState[SDLK_CLEAR])
+        fprintf(stdout,"Key Clear \n");
+
+    if(keyState[SDLK_RETURN])
+        fprintf(stdout,"Key Return \n");
+
+    if(keyState[SDLK_PAUSE])
+        fprintf(stdout,"Key Pause \n");
+
+    if(keyState[SDLK_ESCAPE])
+        fprintf(stdout,"Key Escape \n");
+
+    if(keyState[SDLK_SPACE])
+        fprintf(stdout,"Key Space \n");
+
+    if(keyState[SDLK_EXCLAIM])
+        fprintf(stdout,"Key Exclaimation Mark \n");
+
+    if(keyState[SDLK_QUOTEDBL])
+        fprintf(stdout,"Key Double Quote \n");
+
+    if(keyState[SDLK_HASH])
+        fprintf(stdout,"Key Hash \n");
+
+    if(keyState[SDLK_DOLLAR])
+        fprintf(stdout,"Key Dollar \n");
+
+    if(keyState[SDLK_AMPERSAND])
+        fprintf(stdout,"Key Ampersand \n");
+
+    if(keyState[SDLK_QUOTE])
+        fprintf(stdout,"Key Quote \n");
+
+    if(keyState[SDLK_LEFTPAREN])
+        fprintf(stdout,"Key Left Parenthesis \n");
+
+    if(keyState[SDLK_RIGHTPAREN])
+        fprintf(stdout,"Key Right Parenthesis \n");
+
+    if(keyState[SDLK_ASTERISK])
+        fprintf(stdout,"Key Asterisk \n");
+
+    if(keyState[SDLK_PLUS])
+        fprintf(stdout,"Key Plus Sign \n");
+
+    if(keyState[SDLK_COMMA])
+        fprintf(stdout,"Key Comma \n");
+
+    if(keyState[SDLK_MINUS])
+        fprintf(stdout,"Key Minus Sign \n");
+
+    if(keyState[SDLK_PERIOD])
+        fprintf(stdout,"Key Period \n");
+
+    if(keyState[SDLK_SLASH])
+        fprintf(stdout,"Key Slash \n");
+
+    if(keyState[SDLK_COLON])
+        fprintf(stdout,"Key Colon \n");
+
+    if(keyState[SDLK_SEMICOLON])
+        fprintf(stdout,"Key Semicolon \n");
+
+    if(keyState[SDLK_LESS])
+        fprintf(stdout,"Key Less-Than Symbol \n");
+
+    if(keyState[SDLK_EQUALS])
+        fprintf(stdout,"Key Equals Sign \n");
+
+    if(keyState[SDLK_GREATER])
+        fprintf(stdout,"Key Greater-Than Symbol \n");
+
+    if(keyState[SDLK_QUESTION])
+        fprintf(stdout,"Key Question Mark \n");
+
+    if(keyState[SDLK_AT])
+        fprintf(stdout,"Key At Sign \n");
+
+    if(keyState[SDLK_LEFTBRACKET])
+        fprintf(stdout,"Key Left Bracket \n");
+
+    if(keyState[SDLK_BACKSLASH])
+        fprintf(stdout,"Key Backslash \n");
+
+    if(keyState[SDLK_RIGHTBRACKET])
+        fprintf(stdout,"Key Right Bracket \n");
+
+    if(keyState[SDLK_CARET])
+        fprintf(stdout,"Key Caret \n");
+
+    if(keyState[SDLK_UNDERSCORE])
+        fprintf(stdout,"Key Underscore \n");
+
+    if(keyState[SDLK_BACKQUOTE])
+        fprintf(stdout,"Key Grave \n");
+
+    if(keyState[SDLK_DELETE])
+        fprintf(stdout,"Key Delete \n");
+
+    if(keyState[SDLK_KP_PERIOD])
+        fprintf(stdout,"Key Pad Period \n");
+
+    if(keyState[SDLK_KP_DIVIDE])
+        fprintf(stdout,"Key Pad Division \n");
+
+    if(keyState[SDLK_KP_MULTIPLY])
+        fprintf(stdout,"Key Pad Multiply \n");
+
+    if(keyState[SDLK_KP_MINUS])
+        fprintf(stdout,"Key Pad Minus \n");
+
+    if(keyState[SDLK_KP_PLUS])
+        fprintf(stdout,"Key Pad Plus Sign \n");
+
+    if(keyState[SDLK_KP_ENTER])
+        fprintf(stdout,"Key Pad Enter \n");
+
+    if(keyState[SDLK_KP_EQUALS])
+        fprintf(stdout,"Key Pad Equals Sign \n");
+
+    if(keyState[SDLK_INSERT])
+        fprintf(stdout,"Key Insert \n");
+
+    if(keyState[SDLK_HOME])
+        fprintf(stdout,"Key Home \n");
+
+    if(keyState[SDLK_END])
+        fprintf(stdout,"Key End \n");
+
+    if(keyState[SDLK_PAGEUP])
+        fprintf(stdout,"Key Page Up \n");
+
+    if(keyState[SDLK_PAGEDOWN])
+        fprintf(stdout,"Key Page Down \n");
+
+    if(keyState[SDLK_NUMLOCK])
+        fprintf(stdout,"Key Num Lock \n");
+
+    if(keyState[SDLK_CAPSLOCK])
+        fprintf(stdout,"Key Caps Lock \n");
+
+    if(keyState[SDLK_SCROLLOCK])
+        fprintf(stdout,"Key Scroll Lock \n");
+
+    if(keyState[SDLK_RSHIFT])
+        fprintf(stdout,"Key Right Shift \n");
+
+    if(keyState[SDLK_LSHIFT])
+        fprintf(stdout,"Key Left Shift \n");
+
+    if(keyState[SDLK_RCTRL])
+        fprintf(stdout,"Key Right Ctrl \n");
+
+    if(keyState[SDLK_LCTRL])
+        fprintf(stdout,"Key Left Ctrl \n");
+
+    if(keyState[SDLK_RALT])
+        fprintf(stdout,"Key Right Alt \n");
+
+    if(keyState[SDLK_LALT])
+        fprintf(stdout,"Key Left Alt \n");
+
+    if(keyState[SDLK_RMETA])
+        fprintf(stdout,"Key Right Meta \n");
+
+    if(keyState[SDLK_LMETA])
+        fprintf(stdout,"Key Left Meta \n");
+
+    if(keyState[SDLK_LSUPER])
+        fprintf(stdout,"Key Left Super \n");
+
+    if(keyState[SDLK_RSUPER])
+        fprintf(stdout,"Key Right Super \n");
+
+    if(keyState[SDLK_MODE])
+        fprintf(stdout,"Key Mode Shift \n");
+
+    if(keyState[SDLK_HELP])
+        fprintf(stdout,"Key Help \n");
+
+    if(keyState[SDLK_PRINT])
+        fprintf(stdout,"Key Print Screen \n");
+
+    if(keyState[SDLK_SYSREQ])
+        fprintf(stdout,"Key SysRq \n");
+
+    if(keyState[SDLK_BREAK])
+        fprintf(stdout,"Key Break \n");
+
+    if(keyState[SDLK_MENU])
+        fprintf(stdout,"Key Menu \n");
+
+    if(keyState[SDLK_POWER])
+        fprintf(stdout,"Key Power \n");
+
+    if(keyState[SDLK_EURO])
+        fprintf(stdout,"Key Euro \n");
+
+    keyMod = SDL_GetModState();
+
+    if(keyMod == KMOD_NONE)
+        //fprintf(stdout,"Key Mod None \n");
+
+    if(keyMod == KMOD_NUM)
+        fprintf(stdout,"Key Mod Num Lock \n");
+
+    if(keyMod == KMOD_CAPS)
+        fprintf(stdout,"Key Mod Caps Lock \n");
+
+    if(keyMod == KMOD_LCTRL)
+        fprintf(stdout,"Key Mod Left Ctrl \n");
+
+    if(keyMod == KMOD_RCTRL)
+        fprintf(stdout,"Key Mod Right Ctrl \n");
+
+    if(keyMod == KMOD_RSHIFT)
+        fprintf(stdout,"Key Mod Right Shift \n");
+
+    if(keyMod == KMOD_LSHIFT)
+        fprintf(stdout,"Key Mod Left Shift \n");
+
+    if(keyMod == KMOD_RALT)
+        fprintf(stdout,"Key Mod Right Alt \n");
+
+    if(keyMod == KMOD_LALT)
+        fprintf(stdout,"Key Mod Left Alt \n");
+
+    if(keyMod == KMOD_CTRL)
+        fprintf(stdout,"Key Mod Ctrl \n");
+
+    if(keyMod == KMOD_SHIFT)
+        fprintf(stdout,"Key Mod Shift \n");
+
+    if(keyMod == KMOD_ALT)
+        fprintf(stdout,"Key Mod Alt \n");
+}
+
+void Mouse(void)
+{
+    mouseAbsState = SDL_GetMouseState(&mouseAbsX, &mouseAbsY);
+    mouseRelState = SDL_GetRelativeMouseState(&mouseRelX, &mouseRelY);
+
+    if(mouseRelState == leftMouseButton)
+    {
+        rotateX += mouseRelY * rotateY_speed;
+        rotateY += mouseRelX * rotateX_speed;
+    }
+
+    if(mouseRelState == rightMouseButton)
+    {
+        zoom -= mouseRelY * zoomSpeed;
+        //fprintf(stdout,"Mouse Absolute Button %d pressed at (%d,%d)\n", mouseAbsState, mouseAbsX, mouseAbsY);
+    }
+}
+
+void initJoystick(void)
+{
+    numJoysticks = SDL_NumJoysticks();
+
+    if (numJoysticks == 0)
+        fprintf(stdout,"No Joysticks Found!!!\n");
+    else
+    {
+        Joysticks.resize(numJoysticks);
+        Joystick.resize(numJoysticks);
+
+        for(int index = 0; index < numJoysticks; index++)
+        {
+            Joysticks[index].Name = SDL_JoystickName(index);
+            fprintf(stdout,"Name Of Joystick %s \n", SDL_JoystickName(index));
+
+            Joystick[index] = (SDL_JoystickOpen(index));
+                SDL_JoystickEventState(SDL_ENABLE);
+                Joysticks[index].NumAxes = SDL_JoystickNumAxes(Joystick[index]);
+                Joysticks[index].Axis.resize(Joysticks[index].NumAxes);
+                fprintf(stdout,"Num Of Axes %d \n", Joysticks[index].NumAxes);
+                Joysticks[index].NumButtons = SDL_JoystickNumButtons(Joystick[index]);
+                Joysticks[index].Button.resize(Joysticks[index].NumButtons);
+                fprintf(stdout,"Num Of Buttons %d \n", Joysticks[index].NumButtons);
+                Joysticks[index].NumHats = SDL_JoystickNumHats(Joystick[index]);
+                Joysticks[index].Hat.resize(Joysticks[index].NumHats);
+                fprintf(stdout,"Num Of Hats %d \n", Joysticks[index].NumHats);
+                Joysticks[index].NumBalls = SDL_JoystickNumBalls(Joystick[index]);
+                Joysticks[index].Ball.resize(Joysticks[index].NumBalls);
+                fprintf(stdout,"Num Of Balls %d \n", Joysticks[index].NumBalls);
+
+            fprintf(stdout,"\n\n");
+        }
+    }
+}
+
+void getJoysticks(void)
+{
+    SDL_JoystickUpdate();
+    for(int index = 0; index < numJoysticks; index++)
+    {
+
+        if(Joystick[index] == NULL)
+            fprintf(stderr, "Can Not Open Joystick!\n");
+
+            SDL_JoystickEventState(SDL_ENABLE);
+            for (int indexAxis = 0; indexAxis < Joysticks[index].NumAxes; indexAxis++)
+            {
+                Joysticks[index].Axis[indexAxis] = SDL_JoystickGetAxis(Joystick[index], indexAxis);
+                //fprintf(stdout,"Axis %d: Value %d \n", indexAxis, Joysticks[index].Axis[indexAxis]);
+            }
+            for (int indexButton = 0; indexButton < Joysticks[index].NumButtons; indexButton++)
+            {
+                Joysticks[index].Button[indexButton] = SDL_JoystickGetButton(Joystick[index], indexButton);
+                //fprintf(stdout,"Button %d: Value %d \n", indexButton, Joysticks[index].Button[indexButton]);
+            }
+            for (int indexHat = 0; indexHat < Joysticks[index].NumHats; indexHat++)
+            {
+                Joysticks[index].Hat[indexHat] = SDL_JoystickGetHat(Joystick[index], indexHat);
+                //fprintf(stdout,"Hat %d: Value %d \n", indexHat, Joysticks[index].Hat[indexHat]);
+            }
+            if (Joysticks[index].NumBalls > 0)
+            {
+                for (int indexBall = 0; indexBall < Joysticks[index].NumBalls; indexBall++)
+                {
+                    int JoyBallSuccess = SDL_JoystickGetBall(Joystick[index], indexBall, &Joysticks[index].Ball[indexBall].x, &Joysticks[index].Ball[indexBall].y);
+                    if (JoyBallSuccess == 0)
+                        fprintf(stdout,"Ball %d: X %d   Y %d \n", indexBall, Joysticks[index].Ball[indexBall].x, Joysticks[index].Ball[indexBall].y);
+                    else
+                        fprintf(stdout,"Unable to get Ball values!!!\n");
+                }
+            }
+
+        #if WIN32
+            if(abs(Joysticks[index].Axis[1]) > 3000)
+                rotateX += Joysticks[0].Axis[1] * 0.001 * 0.05;
+            if(abs(Joysticks[index].Axis[0]) > 3000)
+                rotateY += Joysticks[0].Axis[0] * 0.001 * -0.05;
+        #elif (linux)
+            if(abs(Joysticks[index].Axis[1]) > 3000)
+                rotateX += Joysticks[0].Axis[1] * 0.001 * 0.001 * 1.0;
+            if(abs(Joysticks[index].Axis[0]) > 3000)
+                rotateY += Joysticks[0].Axis[0] * 0.001 * 0.001 * -1.0;
+        #endif
+
+        //fprintf(stdout,"\n\n");
+    }
+}
+
+int main(int argc,  char **argv)
+{
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0)
+	{
+		// error
+		fprintf(stderr, "Unable to initalize SDL Video %s", SDL_GetError());
+		exit(1);
+	}
+
+	if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+	{
+		// error
+		fprintf(stderr, "Unable to initalize SDL Joystick %s", SDL_GetError());
+		exit(1);
+	}
+
+    //  window width, window height, bpp, flag
+    //  bpp is 0 when in windowed mode can be something else when in full screen mode 16, 24, 32 etc...
+    //  flag is one of many options listed below.
+    //  SDL_FULLSCREEN runs your application in full screen mode.
+    //  SDL_RESIZABLE if you want to be able to resize the window.
+    //  SDL_DOUBLEBUF allows for double buffering.
+    //  SDL_OPENGL if you are using OpenGL with SDL.
+    //  SDL_OPENGLBLIT if you are using OpenGL with SDL but want SDL to do the actual rendering.
+    //  SDL_NOFRAME this gets rid of the window around the edges when in window mode.  Fullscreen runs
+    //  in this mode for instance.
+    //  SDL_ANYFORMAT sets you up to use the pixel format from physics display device aka your screen.
+    //  SDL_ASYNCBLIT does asynchronous blitting
+    //  SDL_HWPALETTE 8 bit graphics from like the old mario brothers.
+    //	SDL_SWSURFACE renders the display in software mode in main memory.
+    //  SDL_HWSURFACE renders the display in hardware mode in video card's memory
+	if(SDL_SetVideoMode(windowWidth, windowHeight, 0, SDL_OPENGL) == NULL)
+	{
+		// error
+		fprintf(stderr, "Unable to Create OpenGL Scene %s", SDL_GetError());
+		exit(2);
+	}
+
+	initGL(windowWidth, windowHeight);
+    initJoystick();
+
+	bool done = false;
+
+	while(!done)
+	{
+		drawScene();
+
+		SDL_Event event;
+		while (SDL_PollEvent (&event))
+		{
+            switch (event.type)
+            {
+                case SDL_KEYDOWN:
+                    if(event.key.keysym.sym == SDLK_ESCAPE)
+                        done = true;
+                    if(event.key.keysym.mod == KMOD_LCTRL)
+                        fprintf(stdout,"Left Ctrl Pressed \n");
+                    break;
+                case SDL_MOUSEBUTTONUP://button released
+                    if(event.button.button == 1)
+                        leftMouseButtonPressed = false;
+                    //report event
+                    /*fprintf(stdout,"Mouse Button %d Released\n",
+                            event.button.button);*/
+                    break;
+                case SDL_MOUSEMOTION:
+                    if(leftMouseButtonPressed == true)
+                    {
+                        //rotateX += event.motion.yrel * 0.5;
+                        //rotateY += event.motion.xrel * 0.5;
+                    }
+                    /*
+                    fprintf(stdout,"Mouse moved by %d,%d to (%d,%d)\n",
+                        event.motion.xrel, event.motion.yrel,
+                        event.motion.x, event.motion.y);
+                    */
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    if(event.button.button == 1)
+                        leftMouseButtonPressed = true;
+
+                    /*fprintf(stdout,"Mouse button %d pressed at (%d,%d)\n",
+                        event.button.button, event.button.x, event.button.y);*/
+                    break;
+                case SDL_QUIT:
+                    done = true;
+                    break;
+                /*
+                case SDL_JOYAXISMOTION:
+                    if(abs(event.jaxis.value) > 3000)
+                    {
+                        for (int indexAxis = 0; indexAxis < Joysticks[index].NumAxes; indexAxis++)
+                        {
+                            if(event.jaxis.axis == indexAxis)
+                            {
+                                Joysticks[index].Axis[indexAxis] = event.jaxis.value;
+                            }
+                        }
+                    }
+                    break;
+                case SDL_JOYBUTTONDOWN:
+                    for (int indexButton = 0; indexButton < Joysticks[index].NumButtons; indexButton++)
+                    {
+                        if(event.jbutton.button == indexButton)
+                        {
+                            Joysticks[index].Button[indexButton] = 1; //SDL_JoystickGetButton(Joystick, indexButton);
+                            fprintf(stdout,"Button %d: Value %d \n", indexButton, Joysticks[index].Button[indexButton]);
+                        }
+                    }
+                    break;
+                case SDL_JOYHATMOTION:
+                    if(event.jhat.hat | SDL_HAT_CENTERED)
+                    {
+                        fprintf(stdout,"Hat Centered \n");
+                    }
+
+                    else if(event.jhat.hat | SDL_HAT_UP)
+                    {
+                        fprintf(stdout,"Hat UP \n");
+                    }
+
+                    else if(event.jhat.hat | SDL_HAT_DOWN)
+                    {
+                        fprintf(stdout,"Hat Down \n");
+                    }
+
+                    else if(event.jhat.hat | SDL_HAT_LEFT)
+                    {
+                        fprintf(stdout,"Hat Left \n");
+                    }
+
+                    else if(event.jhat.hat | SDL_HAT_RIGHT)
+                    {
+                        fprintf(stdout,"Hat Right \n");
+                    }
+
+                    else if(event.jhat.hat | SDL_HAT_LEFTDOWN)
+                    {
+                        fprintf(stdout,"Hat Left Down \n");
+                    }
+
+                    else if(event.jhat.hat | SDL_HAT_LEFTUP)
+                    {
+                        fprintf(stdout,"Hat Left Up \n");
+                    }
+
+                    else if(event.jhat.hat | SDL_HAT_RIGHTDOWN)
+                    {
+                        fprintf(stdout,"Hat Right Down \n");
+                    }
+
+                    else if(event.jhat.hat | SDL_HAT_RIGHTUP)
+                    {
+                        fprintf(stdout,"Hat Right Up \n");
+                    }
+                    break;
+                    */
+            }
+		}
+        Keyboard();
+        Mouse();
+        /*
+        if(abs(Joysticks[index].Axis[1]) > 3000)
+            rotateX += Joysticks[0].Axis[1] * 0.001 * 0.05;
+        if(abs(Joysticks[index].Axis[0]) > 3000)
+            rotateY += Joysticks[0].Axis[0] * 0.001 * 0.05;
+        */
+        getJoysticks();
+	}
+
+    for(int index = 0; index < numJoysticks; index++)
+    {
+        SDL_JoystickClose(Joystick[index]);
+    }
+
+	SDL_Quit();
+
+	return 0;
+}
+
