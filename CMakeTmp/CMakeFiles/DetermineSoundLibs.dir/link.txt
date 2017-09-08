@@ -1,0 +1,1 @@
+/usr/bin/gcc      CMakeFiles/DetermineSoundLibs.dir/DetermineSoundLibs.o  -o DetermineSoundLibs -rdynamic -lSDL_sound -Wl,-Bstatic -lSDLmain -Wl,-Bdynamic -lSDL -lpthread 

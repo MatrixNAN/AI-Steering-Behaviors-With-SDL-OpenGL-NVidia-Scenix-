@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="SDLNV" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\share\;CMake Files\..\..\..\..\share\cmake-2.8\;CMake Files\..\..\..\..\share\cmake-2.8\Modules\;CMake Files\..\..\..\..\share\cmake-2.8\Modules\Platform\;CMake Files\..\..\..\..\share\cmake-2.8\Modules\Compiler\;CMake Files\..\..\CMake\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/usr/local/scenix/samples/SDLNV" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="SDLNV">
+         <Option output="/usr/local/scenix/bin/amd64/linux/release/SDLNV" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/usr/local/scenix/bin/amd64/linux/release" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/local/scenix/inc" />
+            <Add directory="/usr/local/scenix/inc/nvsg" />
+            <Add directory="/usr/local/scenix/inc/nvsg/nvgl" />
+            <Add directory="/usr/local/scenix/inc/nvrt" />
+            <Add directory="/usr/local/scenix/inc/nvrt/nvirt" />
+            <Add directory="/usr/local/scenix/inc/nvrt/nvirt/nvirtu" />
+            <Add directory="/usr/local/scenix/samples/SDLNV/." />
+            <Add directory="/usr/local/scenix/samples/SDLNV/inc" />
+            <Add directory="/usr/local/scenix/samples/common/inc" />
+            <Add directory="/usr/include/SDL" />
+            <Add directory="/usr/include/GL" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 SDLNV" />
+            <CompileFile command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="SDLNV/fast">
+         <Option output="/usr/local/scenix/bin/amd64/linux/release/SDLNV" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/usr/local/scenix/bin/amd64/linux/release" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/local/scenix/inc" />
+            <Add directory="/usr/local/scenix/inc/nvsg" />
+            <Add directory="/usr/local/scenix/inc/nvsg/nvgl" />
+            <Add directory="/usr/local/scenix/inc/nvrt" />
+            <Add directory="/usr/local/scenix/inc/nvrt/nvirt" />
+            <Add directory="/usr/local/scenix/inc/nvrt/nvirt/nvirtu" />
+            <Add directory="/usr/local/scenix/samples/SDLNV/." />
+            <Add directory="/usr/local/scenix/samples/SDLNV/inc" />
+            <Add directory="/usr/local/scenix/samples/common/inc" />
+            <Add directory="/usr/include/SDL" />
+            <Add directory="/usr/include/GL" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 SDLNV/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="edit_cache">
+         <Option working_dir="/usr/local/scenix/samples/SDLNV" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 edit_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/usr/local/scenix/samples/SDLNV" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/usr/local/scenix/samples/SDLNV/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/src/Agent.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/src/AgentDynamic.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/src/CameraSystem.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/src/main.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/AIScene.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/MeshGenerator.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/SceneFunctions.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/SceniXWidget.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/AnimationManipulator.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/CylindricalCameraManipulator.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/CylindricalCameraManipulatorHIDSync.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/FlightCameraManipulator.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/FlightCameraManipulatorHIDSync.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/HumanInterfaceDevice.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/Manipulator.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/TrackballCameraManipulator.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/TrackballCameraManipulatorHIDSync.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/TrackballTransformManipulator.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/TrackballTransformManipulatorHIDSync.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/WalkCameraManipulator.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/src/ui/WalkCameraManipulatorHIDSync.cpp">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/src/Agent.h">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/src/AgentDynamic.h">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/src/CameraSystem.h">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/inc/AIScene.h">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/inc/MeshGenerator.h">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/inc/SceneFunctions.h">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/common/inc/SceniXWidget.h">
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeSystemSpecificInformation.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeGenericSystem.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeFindCodeBlocks.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeCInformation.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeCommonLanguageInclude.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeCXXInformation.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeCommonLanguageInclude.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindOpenGL.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindX11.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CheckFunctionExists.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CheckLibraryExists.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindPackageMessage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindPackageMessage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeParseArguments.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindSDL.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindThreads.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CheckIncludeFiles.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CheckLibraryExists.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindPackageMessage.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/CMakeParseArguments.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindSDL_sound.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindSDL_mixer.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindSDL_net.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/FindSDL_image.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Platform/Linux.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Platform\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Platform/UnixPaths.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Platform\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Platform/Linux-GNU-C.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Platform\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Platform/Linux-GNU.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Platform\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Platform/Linux-GNU-CXX.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Platform\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Platform/Linux-GNU.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Platform\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Compiler/GNU-C.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Compiler\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Compiler/GNU.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Compiler\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Compiler/GNU-CXX.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Compiler\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../../../share/cmake-2.8/Modules/Compiler/GNU.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\share\cmake-2.8\Modules\Compiler\" />
+      </Unit>
+      <Unit filename="/usr/local/scenix/samples/SDLNV/../../CMake/FindSceniX.cmake">
+          <Option virtualFolder="CMake Files\..\..\CMake\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>
